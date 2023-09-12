@@ -1,52 +1,16 @@
 import {dbConfig} from "../config/dbConfig";
 
 
-export async function createRecipe (title, ingredients){
-    let config = new dbConfig();
-    let properReturn = false;
-    if(title === undefined || ingredients === undefined)
-    {
-        console.log("title or ingredients were not defined");
-        return false;
-    }
-
-    try {
-
-        const creationQuery = { title: title, ingredients: ingredients };
-        await config.recipes.create(creationQuery);
-
-        properReturn =  true;
-    } catch (error){
-        console.log(error)
-        properReturn =  false;
-    } finally {
-        await config.client.close();
-    }
-
-    return properReturn;
-
+export function getAllRecipes(req, res){
+    let db = new dbConfig();
+    let collection = db.database.collection("posts");
+    let results = collection.find({},(err) => {
+        if(err){
+            res.send(err);
+        }
+    })
+        .limit(50)
+        .toArray();
+    res.send(results).status(200);
 }
-export async function deleteRecipe (title){
-    let config = new dbConfig();
-    let properReturn = false;
-    if(title === undefined)
-    {
-        console.log("title was undefined");
-        return false;
-    }
 
-    try {
-
-        const deletionQuery = { title: title};
-        await config.recipes.deleteOne(deletionQuery);
-
-        properReturn =  true;
-    } catch (error){
-        console.log(error)
-        properReturn =  false;
-    } finally {
-        await config.client.close();
-    }
-
-    return properReturn;
-}

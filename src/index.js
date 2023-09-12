@@ -1,24 +1,6 @@
 const express = require("express");
-const cors = require("cors");
-
 const app = express();
-
-var corsOptions = {
-    origin: "http://localhost:8081"
-};
-
-app.use(cors(corsOptions));
-
-// parse requests of content-type - application/json
-app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-
-// simple route
-app.get("/", (req, res) => {
-    res.json({ message: "Server started!" });
-});
+const recipeRouter = require("./Router/recipeRouter"); // Update the path based on your project structure
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -26,11 +8,14 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });
 
+// parse requests of content-type - application/json
+app.use(express.json());
 
-const { MongoClient } = require("mongodb");
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 
-// Replace the uri string with your connection string.
-const uri = "mongodb+srv://brandonlj8:Sophia11@cluster0.kqoflbh.mongodb.net/?retryWrites=true&w=majority";
+//REST API
+app.get('/apiRec', recipeRouter);
 
-const client = new MongoClient(uri);
+
 
