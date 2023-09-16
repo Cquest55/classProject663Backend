@@ -16,7 +16,7 @@ class dbConfig {
             this.database = this.client.db('Recipe');
             this.recipes = this.database.collection('Recipe');
         } catch (error) {
-            console.error("Error connecting to the database:", error);
+            console.error("Error connecting to the database check here:", error);
         }
     }
 }

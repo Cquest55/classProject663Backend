@@ -5,18 +5,30 @@ const router = express.Router();
 router.post("/insertRec", async (req, res) => {
     let db = new dbConfig();
     let newDocument = req.body;
-    newDocument.date = new Date();
+
+    console.log("Received Document:", newDocument); // Log the received document
+
+    if (newDocument) {
+        newDocument.date = new Date();
+    }
     await db.connect();
+
     try {
+        if (!newDocument || !newDocument.title || !newDocument.ingredients) {
+            res.status(400).json({ error: "Invalid document. Missing required fields." });
+            return;
+        }
         let results = await db.recipes.insertOne(newDocument);
-        res.json(results).status(204);
+        console.log("Inserted Document:", results); // Log the inserted document
+        res.status(204).json(results);
     } catch (error) {
-        console.error("Error querying the collection:", error);
+        console.error("Error inserting document:", error); // Log any insertion error
         res.status(500).json({ error: "Internal server error" });
     } finally {
         await db.client.close(); // Close the MongoDB client when done
     }
 });
+
 
 router.delete("/delRec/:title", async (req, res) => {
     let db = new dbConfig();
